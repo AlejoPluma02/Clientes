@@ -1,0 +1,4 @@
+.modal-dialog {
+    max-height: calc(100vh - 100px); /* Altura máxima del modal */
+    overflow-y: auto; /* Permitir desplazamiento vertical si es necesario */
+}
