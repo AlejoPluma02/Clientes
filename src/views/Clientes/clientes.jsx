@@ -1,44 +1,35 @@
-// Importación de React y useState, useEffect desde 'react'
 import React, { useState, useEffect } from "react";
-
-// Importación de funciones de la API de Compras y estilos CSS
 import {
   listarClientes,
   crearClientes,
-  actualizarClientes,
-  eliminarClientes,
-}from "../../src/utils/api/Clientes";
-import "../../src/views/clientes/clientes.css";
+  eliminarClientes
+} from "../../utils/api/Clientes";
 
-
-// Definición del componente Clientes
 const Clientes = () => {
-  // Declaración de estados utilizando useState
-  const [clientes, setClientes] = useState([]); // Lista de clientes
-  const [shouldReload, setShouldReload] = useState(false); // Indicador de recarga
-  const [proveedorError, setProveedorError] = useState(""); // Mensaje de error para el proveedor
-  const [fechaError, setFechaError] = useState(""); // Mensaje de error para la fecha
-  const [totalError, setTotalError] = useState(""); // Mensaje de error para el total
+  const [clientes, setClientes] = useState([]);
+  const [shouldReload, setShouldReload] = useState(false);
+  const [tipoDocumentoError, setTipoDocumentoError] = useState(""); // Error de tipo de documento
+  const [nroDocumentoError, setNroDocumentoError] = useState(""); // Error de número de documento
+  const [nombreApellidoError, setNombreApellidoError] = useState(""); // Error de nombre y apellido
+  const [telefonoError, setTelefonoError] = useState(""); // Error de teléfono
+  const [direccionError, setDireccionError] = useState(""); // Error de dirección
+  const [correoError, setCorreoError] = useState(""); // Error de correo electrónico
 
-  // Estado del cliente
   const [cliente, setCliente] = useState({
     TipoDocumento: "",
-    NroDocumento: 0,
+    NroDocumento: "",
     NombreApellido: "",
-    Telefono: 0,
+    Telefono: "",
     Direccion: "",
     Correo: "",
   });
 
-  // Estado para almacenar el ID del cliente a anular
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
-  // Efecto para cargar los clientes
   useEffect(() => {
     listarClientes(setClientes);
   }, [shouldReload]);
 
-  // Manejador de cambio de inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCliente({
@@ -47,12 +38,10 @@ const Clientes = () => {
     });
   };
 
-  // Manejador para eliminar un cliente
   const handleDelete = (IdCliente) => {
     setConfirmDeleteId(IdCliente);
   };
 
-  // Manejador para enviar el formulario de compra
   const handleSubmit = async (e) => {
     e.preventDefault();
     let formIsValid = true;
@@ -106,7 +95,6 @@ const Clientes = () => {
     }
   };
 
-  // Renderizado del componente Clientes
   return (
     <div className="card shadow mb-4">
       <div className="card-header py-3">
@@ -140,17 +128,6 @@ const Clientes = () => {
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tfoot>
-              <tr>
-                <th>TipoDocumento</th>
-                <th>NroDocumento</th>
-                <th>Nombre y Apellido</th>
-                <th>Telefono</th>
-                <th>Direccion</th>
-                <th>Correo</th>
-                <th>Acciones</th>
-              </tr>
-            </tfoot>
             <tbody>
               {clientes.map((cliente, index) => (
                 <tr key={index}>
@@ -163,17 +140,7 @@ const Clientes = () => {
                   <td>
                     <div style={{ display: "flex", gap: "10px" }}>
                       <button
-                        type="button"
-                        onClick={() => handleDetalle(cliente.Id)}
-                        className="btn btn-warning"
-                        data-toggle="modal"
-                        data-target="#exampleModal"
-                      >
-                        Ver detalle
-                      </button>
-
-                      <button
-                        onClick={() => handleDelete(cliente.Id)}
+                        onClick={() => handleDelete(cliente.IdCliente)}
                         className="btn btn-danger"
                         data-toggle="modal"
                         data-target="#confirmDeleteModal"
@@ -189,7 +156,6 @@ const Clientes = () => {
         </div>
       </div>
 
-      {/* Modal para crear un cliente */}
       <div
         className="modal fade"
         id="ModalCrearCliente"
@@ -244,7 +210,8 @@ const Clientes = () => {
                     id="tipoDocumentoCliente"
                   >
                     <option value="">Selecciona un tipo de documento</option>
-                    {/* Aquí podrías mapear opciones de tipo de documento si es necesario */}
+                    <option value="Cedula">Cédula</option>
+                    {/* Aquí puedes agregar más opciones si es necesario */}
                   </select>
                 </div>
                 <div className="form-group">
@@ -333,7 +300,6 @@ const Clientes = () => {
         </div>
       </div>
 
-      {/* Modal de confirmación para eliminar un cliente */}
       <div
         className="modal fade"
         id="confirmDeleteModal"
@@ -371,7 +337,7 @@ const Clientes = () => {
               <button
                 type="button"
                 className="btn btn-danger"
-                onClick={confirmDelete}
+                onClick={() => handleDelete(confirmDeleteId)}
                 data-dismiss="modal"
               >
                 Eliminar Cliente
@@ -384,5 +350,4 @@ const Clientes = () => {
   );
 };
 
-// Exportación del componente Compras
-export default Compras;
+export default Clientes;

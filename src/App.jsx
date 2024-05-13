@@ -5,7 +5,7 @@ function App() {
   return (
     <Fragment>
       <div>
-        <Clientess />
+        <Clientes />
       </div>
     </Fragment>
   );
