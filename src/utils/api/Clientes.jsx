@@ -61,8 +61,11 @@ export const eliminarClientes = async (IdCliente, setClientes) => {
         const response = await fetch(`http://localhost:3000/api/clientes/${IdCliente}`, requestInit);
         const data = await response.json();
         console.log(data);
-        listarClientes(setClientes); // Aquí estás volviendo a obtener la lista de clientes después de eliminar uno
+        // Aquí podrías actualizar la lista de clientes después de eliminar uno si fuera necesario
+        // Por ejemplo, puedes volver a listar los clientes aquí si la eliminación fue exitosa
+        listarClientes(setClientes);
     } catch (error) {
         console.error('Error al eliminar el cliente:', error);
     }
-};  
+};
+

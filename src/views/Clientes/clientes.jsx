@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import {
   listarClientes,
   crearClientes,
-  eliminarClientes
+  actualizarClientes,
+  eliminarClientes,
 } from "../../utils/api/Clientes";
 
 const Clientes = () => {
@@ -14,6 +15,7 @@ const Clientes = () => {
   const [telefonoError, setTelefonoError] = useState("");
   const [direccionError, setDireccionError] = useState("");
   const [correoError, setCorreoError] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   const [cliente, setCliente] = useState({
     TipoDocumento: "",
@@ -24,7 +26,7 @@ const Clientes = () => {
     Correo: "",
   });
 
-  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [clienteActualizando, setClienteActualizando] = useState(null);
 
   useEffect(() => {
     listarClientes(setClientes);
@@ -52,6 +54,13 @@ const Clientes = () => {
 
   const handleDelete = (IdCliente) => {
     setConfirmDeleteId(IdCliente);
+  };
+
+  const confirmDelete = async () => {
+    if (confirmDeleteId) {
+      await eliminarClientes(confirmDeleteId, setClientes);
+      setConfirmDeleteId(null);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -102,6 +111,37 @@ const Clientes = () => {
 
     if (formIsValid) {
       await crearClientes(cliente, setClientes, setShouldReload);
+      // Limpiar el formulario después de crear el cliente
+      setCliente({
+        TipoDocumento: "",
+        NroDocumento: "",
+        NombreApellido: "",
+        Telefono: "",
+        Direccion: "",
+        Correo: "",
+      });
+    }
+  };
+
+  const openUpdateModal = (cliente) => {
+    setClienteActualizando(cliente);
+  };
+
+  const closeUpdateModal = () => {
+    setClienteActualizando(null);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    let formIsValid = true;
+
+    if (formIsValid) {
+      await actualizarClientes(
+        clienteActualizando.IdCliente,
+        cliente,
+        setClientes
+      );
+      closeUpdateModal();
     }
   };
 
@@ -156,6 +196,14 @@ const Clientes = () => {
                         data-target="#confirmDeleteModal"
                       >
                         Eliminar
+                      </button>
+                      <button
+                        onClick={() => openUpdateModal(cliente)}
+                        className="btn btn-primary"
+                        data-toggle="modal"
+                        data-target="#ModalActualizarCliente"
+                      >
+                        Actualizar
                       </button>
                     </div>
                   </td>
@@ -218,6 +266,7 @@ const Clientes = () => {
                     onChange={handleChange}
                     className="form-control"
                     id="tipoDocumentoCliente"
+                    value={cliente.TipoDocumento}
                   >
                     <option value="">Selecciona un tipo de documento</option>
                     <option value="Cedula">Cédula</option>
@@ -233,6 +282,7 @@ const Clientes = () => {
                     type="text"
                     className="form-control"
                     id="nroDocumentoCliente"
+                    value={cliente.NroDocumento}
                     placeholder="Ingrese el número de documento"
                   />
                 </div>
@@ -246,6 +296,7 @@ const Clientes = () => {
                     type="text"
                     className="form-control"
                     id="nombreApellidoCliente"
+                    value={cliente.NombreApellido}
                     placeholder="Ingrese el nombre y apellido"
                   />
                 </div>
@@ -257,6 +308,7 @@ const Clientes = () => {
                     type="text"
                     className="form-control"
                     id="telefonoCliente"
+                    value={cliente.Telefono}
                     placeholder="Ingrese el número de teléfono"
                   />
                 </div>
@@ -268,6 +320,7 @@ const Clientes = () => {
                     type="text"
                     className="form-control"
                     id="direccionCliente"
+                    value={cliente.Direccion}
                     placeholder="Ingrese la dirección"
                   />
                 </div>
@@ -279,6 +332,7 @@ const Clientes = () => {
                     type="email"
                     className="form-control"
                     id="correoCliente"
+                    value={cliente.Correo}
                     placeholder="Ingrese el correo electrónico"
                   />
                 </div>
@@ -301,6 +355,103 @@ const Clientes = () => {
                   </button>
                   <button type="submit" className="btn btn-primary">
                     Guardar Cliente
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="ModalActualizarCliente"
+        tabIndex="-1"
+        role="dialog"
+        aria-labelledby="ModalActualizarClienteLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-scrollable" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="ModalActualizarClienteLabel">
+                Actualizar Cliente
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={closeUpdateModal}
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              {/* Otros mensajes de error de formulario */}
+              <form onSubmit={handleUpdate}>
+                <div className="form-group">
+                  <label htmlFor="nombreApellidoCliente">
+                    Nombre y Apellido:
+                  </label>
+                  <input
+                    name="NombreApellido"
+                    onChange={handleChange}
+                    type="text"
+                    className="form-control"
+                    id="nombreApellidoCliente"
+                    value={cliente.NombreApellido}
+                    placeholder="Ingrese el nombre y apellido"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="telefonoCliente">Teléfono:</label>
+                  <input
+                    name="Telefono"
+                    onChange={handleChange}
+                    type="text"
+                    className="form-control"
+                    id="telefonoCliente"
+                    value={cliente.Telefono}
+                    placeholder="Ingrese el número de teléfono"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="direccionCliente">Dirección:</label>
+                  <input
+                    name="Direccion"
+                    onChange={handleChange}
+                    type="text"
+                    className="form-control"
+                    id="direccionCliente"
+                    value={cliente.Direccion}
+                    placeholder="Ingrese la dirección"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="correoCliente">Correo Electrónico:</label>
+                  <input
+                    name="Correo"
+                    onChange={handleChange}
+                    type="email"
+                    className="form-control"
+                    id="correoCliente"
+                    value={cliente.Correo}
+                    placeholder="Ingrese el correo electrónico"
+                  />
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-dismiss="modal"
+                    onClick={closeUpdateModal}
+                  >
+                    Cancelar
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Actualizar Cliente
                   </button>
                 </div>
               </form>
@@ -346,7 +497,7 @@ const Clientes = () => {
               <button
                 type="button"
                 className="btn btn-danger"
-                onClick={() => handleDelete(confirmDeleteId)}
+                onClick={confirmDelete}
                 data-dismiss="modal"
               >
                 Eliminar Cliente
