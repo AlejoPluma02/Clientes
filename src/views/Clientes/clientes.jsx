@@ -135,7 +135,8 @@ const Clientes = () => {
     e.preventDefault();
     let formIsValid = true;
 
-    if (formIsValid) {
+    if (clienteActualizando && formIsValid) {
+      // Verifica si clienteActualizando no es null
       await actualizarClientes(
         clienteActualizando.IdCliente,
         cliente,

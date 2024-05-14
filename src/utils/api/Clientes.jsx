@@ -51,6 +51,7 @@ export const actualizarClientes = async (IdCliente, clienteActualizado, setClien
     }
 };
 
+
 // Función para eliminar un cliente
 export const eliminarClientes = async (IdCliente, setClientes) => {
     const requestInit = {
