@@ -65,4 +65,4 @@ export const eliminarClientes = async (IdCliente, setClientes) => {
     } catch (error) {
         console.error('Error al eliminar el cliente:', error);
     }
-};
+};  

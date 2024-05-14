@@ -8,12 +8,12 @@ import {
 const Clientes = () => {
   const [clientes, setClientes] = useState([]);
   const [shouldReload, setShouldReload] = useState(false);
-  const [tipoDocumentoError, setTipoDocumentoError] = useState(""); // Error de tipo de documento
-  const [nroDocumentoError, setNroDocumentoError] = useState(""); // Error de número de documento
-  const [nombreApellidoError, setNombreApellidoError] = useState(""); // Error de nombre y apellido
-  const [telefonoError, setTelefonoError] = useState(""); // Error de teléfono
-  const [direccionError, setDireccionError] = useState(""); // Error de dirección
-  const [correoError, setCorreoError] = useState(""); // Error de correo electrónico
+  const [tipoDocumentoError, setTipoDocumentoError] = useState("");
+  const [nroDocumentoError, setNroDocumentoError] = useState("");
+  const [nombreApellidoError, setNombreApellidoError] = useState("");
+  const [telefonoError, setTelefonoError] = useState("");
+  const [direccionError, setDireccionError] = useState("");
+  const [correoError, setCorreoError] = useState("");
 
   const [cliente, setCliente] = useState({
     TipoDocumento: "",
@@ -32,10 +32,22 @@ const Clientes = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCliente({
-      ...cliente,
-      [name]: value,
-    });
+    if (name === "Correo") {
+      setCliente({
+        ...cliente,
+        Correo: value,
+      });
+    } else if (name === "Direccion") {
+      setCliente({
+        ...cliente,
+        Direccion: value,
+      });
+    } else {
+      setCliente({
+        ...cliente,
+        [name]: value,
+      });
+    }
   };
 
   const handleDelete = (IdCliente) => {
@@ -46,7 +58,6 @@ const Clientes = () => {
     e.preventDefault();
     let formIsValid = true;
 
-    // Validaciones de formulario
     if (!cliente.TipoDocumento) {
       setTipoDocumentoError("Por favor seleccione un tipo de documento.");
       formIsValid = false;
@@ -89,7 +100,6 @@ const Clientes = () => {
       setCorreoError("");
     }
 
-    // Si el formulario es válido, se crea el cliente
     if (formIsValid) {
       await crearClientes(cliente, setClientes, setShouldReload);
     }
@@ -211,7 +221,6 @@ const Clientes = () => {
                   >
                     <option value="">Selecciona un tipo de documento</option>
                     <option value="Cedula">Cédula</option>
-                    {/* Aquí puedes agregar más opciones si es necesario */}
                   </select>
                 </div>
                 <div className="form-group">
